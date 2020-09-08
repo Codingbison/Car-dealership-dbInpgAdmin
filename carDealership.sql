@@ -38,11 +38,10 @@ VALUES (6, 'Ahmed', 'Ali', 'alia@hotmail.com', 'BC CANADA', '1230987654');
 
 CREATE TABLE Mechanic_record(
 	record_id serial PRIMARY KEY,
-	service_id INTEGER references Service_invoice(service_id),
-	mechanic_id INTEGER references mechanic(mechanic_id)	
+	service_id INTEGER,
+	mechanic_id INTEGER,
+	Foreign key (mechanic_id) references mechanic(mechanic_id)	
 );
-INSERT INTO Mechanic_record(record_id, service_id, mechanic_id)
-VALUES (5, 8, 9)
 
 CREATE TABLE Service_invoice(
 	service_id serial PRIMARY KEY,
@@ -50,18 +49,26 @@ CREATE TABLE Service_invoice(
 	amount NUMERIC(8,2),
 	total_cost NUMERIC(10,2),
 	description VARCHAR(500),
-	customer_id INTEGER references Customer(customer_id),
-	parts_id INTEGER references Parts(parts_id)
+	customer_id INTEGER,
+	Foreign Key(customer_id) references Customer(customer_id)
 );
-INSERT INTO Service_invoice(service_id, order_date, amount, total_cost, description, customer_id, item_id)
-VALUES ('4', '11-05-2020', '3', '130', 'Changing oil and one tire', '3', '2');
 
 CREATE TABLE Parts(
 	parts_id serial PRIMARY KEY,
 	part_type VARCHAR(100),
 	part_price NUMERIC(6,2),
-	service_id INTEGER references Service_invoice(service_id)
+	service_id INTEGER,
+	Foreign Key(service_id) references Service_invoice(service_id)
 );
+ALTER TABLE Mechanic_record
+ADD FOREIGN KEY(service_id) references Service_invoice(service_id)
+
+INSERT INTO Service_invoice(service_id, order_date, amount, total_cost, description, customer_id, item_id)
+VALUES ('4', '11-05-2020', '3', '130', 'Changing oil and one tire', '3', '2');
+
+INSERT INTO Mechanic_record(record_id, service_id, mechanic_id)
+VALUES (5, 4, 6)
+
 INSERT INTO Parts (parts_id, part_type, part_price, service_id)
 VALUES ('5', 'Tire', '30', '1');
 
@@ -79,9 +86,12 @@ CREATE TABLE sales_invoice(
 	sales_id INTEGER PRIMARY KEY,
 	amount NUMERIC(8,2),
 	purchase_date TIMESTAMP,
-	serial_id INTEGER references car_inventory(serial_id),
-	staff_id INTEGER references Sales_person(staff_id),
-	customer_id INTEGER references customer(customer_id)
+	serial_id INTEGER,
+	Foreign Key(serial_id) references car_inventory(serial_id),
+	staff_id INTEGER,
+	Foreign Key(staff_id) references Sales_person(staff_id),
+	customer_id INTEGER,
+	Foreign Key(customer_id) references Customer(customer_id)
 );
 INSERT INTO sales_invoice(sales_id, amount, purchase_date, serial_id, staff_id, customer_id)
 VALUES ('4','67','21-03-2020','643','9','5');
